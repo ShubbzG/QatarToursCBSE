@@ -1,7 +1,9 @@
 from struct import pack
 import tkinter as tk
 from tkinter import ttk
-
+import mysql.connector
+from tkinter import messagebox as mBox
+from mysql.connector import Error
 
 
 window = tk.Tk()
@@ -26,8 +28,8 @@ Last_Name_Label.grid(row=0,column=2,padx= 10,pady = 5)
 First_Name_Entry = tk.Entry(customer_info_frame)
 First_Name_Entry.grid(row=1,column=0,padx= 10,pady = 5)
 
-Last_Name_Label = tk.Entry(customer_info_frame)
-Last_Name_Label.grid(row=1,column=2,padx= 10,pady = 5)
+Last_Name_Entry = tk.Entry(customer_info_frame)
+Last_Name_Entry.grid(row=1,column=2,padx= 10,pady = 5)
 
 package = tk.Label(customer_info_frame,text='SELECT PACKAGE')
 package_combobox = ttk.Combobox(customer_info_frame,values=['World Tour/6M','World Tour/1Y','Any Country 1M'])
@@ -53,7 +55,40 @@ terms.grid(row=1,column=0)
 terms_checkbox.grid(row=2,column=0)
 terms_info.grid(row=3,column=0)
 
+#Yaha par password aur database tera kar lena aur execute jaisi table bana de
+def _msgBox():
+    try:
+     
+     conn = mysql.connector.connect(host='localhost',database='project',user='root',password='123456')
+     cursor = conn.cursor()
+     row = cursor.execute("insert into qatar_tours(First_Name, Last_Name, Select_Package, No_of_People) values('"+First_Name_Entry.get()+"', '"+Last_Name_Entry.get()+"','"+package_combobox.get()+"','"+age_spinbox.get()+"')")
+     print(cursor.rowcount)
+    
+     if(cursor.rowcount>0):
+         mBox.showinfo('Congrats!')
+         
+     else:
+         print('Not Done!')
+    except Error as e :
+     print("Error while connecting to MySQL", e)
+    finally:
+        print("MySQL connection is closed")
+        conn.commit()
+
+
+
+action = ttk.Button(CourseFrame, text="Confirm!",command=_msgBox) 
+action.grid(row=4,column=0)
 window.mainloop()
+
+
+#Itna hi karna hai kya
+
+
+
+
+
+
 
 
 
